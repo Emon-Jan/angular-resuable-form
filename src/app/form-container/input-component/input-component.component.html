@@ -1,0 +1,14 @@
+<div class="form-element">
+    <p>input-component works!</p>
+<mat-form-field class="example-full-width" appearance="fill">
+  <mat-label>{{label}}</mat-label>
+  <input [type]="type" matInput [placeholder]="placeholder" [value]="valueVar" (input)="setValue($event)">
+  <!-- <mat-hint>Errors appear instantly!</mat-hint> -->
+  <mat-error *ngIf="errorMsg && errorMsg.email">
+    Please enter a valid email address
+  </mat-error>
+  <mat-error *ngIf="errorMsg && errorMsg.required">
+    Email is <strong>required</strong>
+  </mat-error>
+</mat-form-field>
+</div>
