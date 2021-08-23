@@ -1,8 +1,26 @@
 <form class="example-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <app-input-component
+        [type]="'email'"
+        formControlName="emailFormControl"
+        [label]="'Email'"
+        [placeholder]="'example@ex.com'"
+        [errorMsg]="form.get('emailFormControl')!.errors"
+    ></app-input-component>
+    <app-input-component
+        [type]="'password'"
+        formControlName="passFormControl"
+        [label]="'Password'"
+        [errorMsg]="form.get('passFormControl')!.errors"
+    ></app-input-component>
+    <app-input-component
+        [type]="'tel'"
+        formControlName="phoneFormControl"
+        [label]="'Phone'"
+        [placeholder]="'+123 234 567'"
+        [errorMsg]="form.get('phoneFormControl')!.errors"
+    ></app-input-component>
 
- <app-input-component [type]="'email'" formControlName="emailFormControl" [label]="'Email'" [placeholder]="'example@ex.com'" [errorMsg]="form.get('emailFormControl')!.errors"></app-input-component>
- <app-input-component [type]="'password'" formControlName="passFormControl" [label]="'Password'"></app-input-component>
- <app-input-component [type]="'phone'" formControlName="phoneFormControl" [label]="'Phone'" [placeholder]="'+123 234 567'"></app-input-component>
-
- <button mat-raised-button type="submit">Submit</button>
+    <button mat-raised-button type="submit" [disabled]="!form.valid">
+        Submit
+    </button>
 </form>
