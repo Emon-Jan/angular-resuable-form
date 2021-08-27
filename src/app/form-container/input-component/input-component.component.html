@@ -8,12 +8,11 @@
             [value]="valueVar"
             (input)="setValue($event)"
             formControlName="inputVal"
+            [required]="isRequired"
         />
-        <mat-error *ngIf="formControlVal.errors?.email">
-            Please enter a valid email address
+        <mat-error [innerHTML]="getErrorMsg">
         </mat-error>
-        <mat-error *ngIf="formControlVal.errors?.required">
-            Email is <strong>required</strong>
+        <mat-error [innerHTML]="getRequiredErrorMsg" *ngIf="formControlVal.errors?.required">
         </mat-error>
     </mat-form-field>
     <p>{{ formControlVal.errors | json }}</p>

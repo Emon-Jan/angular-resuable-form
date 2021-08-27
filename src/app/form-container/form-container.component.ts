@@ -8,12 +8,13 @@ import { Validators, FormBuilder } from '@angular/forms';
 export class FormContainerComponent implements OnInit {
     constructor(private fb: FormBuilder) {}
 
-    ngOnInit(): void {}
+    ngOnInit(): void {
+    }
 
     fromGroup = {
-        emailFormControl: ['', [Validators.required, Validators.email]],
-        passFormControl: [null, Validators.required],
-        phoneFormControl: [null, Validators.required],
+        emailFormControl: ['Hello'],
+        passFormControl: ["sadasd"],
+        phoneFormControl: ["123456"],
     };
 
     form = this.fb.group(this.fromGroup);

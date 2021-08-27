@@ -30,21 +30,21 @@ const isValidPass = (val: string) => {
     return true;
 };
 
-function forbiddenNameValidator(type: string): ValidatorFn {
+function inputControlValidator(type: string): ValidatorFn {
 
     return (control: AbstractControl): ValidationErrors | null => {
-        const val = control.value;
+        let val = control.value;
         let forbidden = false;
         switch (type) {
             case 'email':
                 forbidden = val.includes('.com');
-                return forbidden ? null:{email: true};
+                return forbidden ? null: {email: true};
             case 'password':
                 forbidden = isValidPass(val);
-                return forbidden ? null:{pass: true};
+                return forbidden ? null: {pass: true};
             case 'tel':
                 forbidden = true;
-                return forbidden ? null:{phone: true};
+                return forbidden ? null: {phone: true};
 
             case 'text':
             default:
@@ -74,22 +74,28 @@ function forbiddenNameValidator(type: string): ValidatorFn {
 export class InputComponentComponent
     implements ControlValueAccessor, OnInit
 {
+    myGroup!: FormGroup;
     @Input() type = 'text';
     @Input() label: string = 'label';
     @Input() placeholder!: string;
-    @Input() errorMsg: any;
+    @Input() isRequired!: boolean;
+    @Input() parentForm!: AbstractControl;
 
+    public errorMsg: any;
     public valueVar!: string;
     public onChange!: (val: any) => void;
     public onTouched!: () => void;
-    myGroup!: FormGroup;
 
     constructor() {}
 
     ngOnInit(){
         this.myGroup = new FormGroup({
-            inputVal: new FormControl('', [Validators.required, forbiddenNameValidator(this.type)])
+            inputVal: new FormControl('', [Validators.required, inputControlValidator(this.type)])
          });
+
+        if (this.parentForm) {
+            this.formControlVal.setValue(this.parentForm.value);
+         }
     }
 
     get formControlVal() {
@@ -117,6 +123,33 @@ export class InputComponentComponent
     setValue(ev: any) {
         this.valueVar = ev.target.value;
         this.onChange(this.valueVar);
+    }
+
+    get getErrorMsg(){
+        const isRequired = !this.formControlVal.errors?.required;
+        if(this.formControlVal.errors?.email && isRequired){
+            return "Please provide an valid <strong>email!<strong>"
+        }
+        else if(this.formControlVal.errors?.pass && isRequired){
+            return "Incorrect <strong>password!<strong>"
+        }
+        else if(this.formControlVal.errors?.phone && isRequired){
+            return "Invalid <strong>phone number!<strong>"
+        }
+        return;
+    }
+
+    get getRequiredErrorMsg(){
+        if(this.type=='email'){
+            return "Email is required!"
+        }
+        else if(this.type=='password'){
+            return "Password is required!"
+        }
+        else if(this.type=='tel'){
+            return "Phone number is required"
+        }
+        return;
     }
 
 }
