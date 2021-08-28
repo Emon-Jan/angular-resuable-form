@@ -6,52 +6,10 @@ import {
     FormGroup,
     NG_VALIDATORS,
     NG_VALUE_ACCESSOR,
-    ValidationErrors,
-    ValidatorFn,
     Validators,
 } from '@angular/forms';
-
-const isValidPass = (val: string) => {
-    let re = /[0-9]/;
-    if (!re.test(val)) {
-        return false;
-    }
-    re = /[a-z]/;
-    if (!re.test(val)) {
-        return false;
-    }
-    re = /[A-Z]/;
-    if (!re.test(val)) {
-        return false;
-    }
-    if (val.length <= 8) {
-        return false;
-    }
-    return true;
-};
-
-function inputControlValidator(type: string): ValidatorFn {
-
-    return (control: AbstractControl): ValidationErrors | null => {
-        let val = control.value;
-        let forbidden = false;
-        switch (type) {
-            case 'email':
-                forbidden = val.includes('.com');
-                return forbidden ? null: {email: true};
-            case 'password':
-                forbidden = isValidPass(val);
-                return forbidden ? null: {pass: true};
-            case 'tel':
-                forbidden = true;
-                return forbidden ? null: {phone: true};
-
-            case 'text':
-            default:
-                return forbidden ? {value: true}: null;
-        }
-    };
-  }
+import { inputControlValidator } from 'src/app/helper/validators/custom-validators';
+import { ERROR_MESSAGES, INPUT_TYPE } from "../../helper/constants/contants";
 
 @Component({
     selector: 'app-input-component',
@@ -79,7 +37,7 @@ export class InputComponentComponent
     @Input() label: string = 'label';
     @Input() placeholder!: string;
     @Input() isRequired!: boolean;
-    @Input() parentForm!: AbstractControl;
+    @Input() parentFormCtrl!: AbstractControl | null;
 
     public errorMsg: any;
     public valueVar!: string;
@@ -93,8 +51,8 @@ export class InputComponentComponent
             inputVal: new FormControl('', [Validators.required, inputControlValidator(this.type)])
          });
 
-        if (this.parentForm) {
-            this.formControlVal.setValue(this.parentForm.value);
+        if (this.parentFormCtrl) {
+            this.formControlVal.setValue(this.parentFormCtrl.value);
          }
     }
 
@@ -127,27 +85,27 @@ export class InputComponentComponent
 
     get getErrorMsg(){
         const isRequired = !this.formControlVal.errors?.required;
-        if(this.formControlVal.errors?.email && isRequired){
-            return "Please provide an valid <strong>email!<strong>"
+        if(this.formControlVal.errors?.[INPUT_TYPE.EMAIL] && isRequired){
+            return ERROR_MESSAGES.EMAIL_FORM_ERROR;
         }
-        else if(this.formControlVal.errors?.pass && isRequired){
-            return "Incorrect <strong>password!<strong>"
+        else if(this.formControlVal.errors?.[INPUT_TYPE.PASSWORD] && isRequired){
+            return ERROR_MESSAGES.PASSWORD_FORM_ERROR;
         }
-        else if(this.formControlVal.errors?.phone && isRequired){
-            return "Invalid <strong>phone number!<strong>"
+        else if(this.formControlVal.errors?.[INPUT_TYPE.PHONE] && isRequired){
+            return ERROR_MESSAGES.PHONE_FORM_ERROR;
         }
         return;
     }
 
     get getRequiredErrorMsg(){
-        if(this.type=='email'){
-            return "Email is required!"
+        if(this.type==INPUT_TYPE.EMAIL){
+            return ERROR_MESSAGES.EMAIL_REQUIRED;
         }
-        else if(this.type=='password'){
-            return "Password is required!"
+        else if(this.type==INPUT_TYPE.PASSWORD){
+            return ERROR_MESSAGES.PASSWORD_REQUIRED;
         }
-        else if(this.type=='tel'){
-            return "Phone number is required"
+        else if(this.type==INPUT_TYPE.PHONE){
+            return ERROR_MESSAGES.PHONE_REQUIRED;
         }
         return;
     }

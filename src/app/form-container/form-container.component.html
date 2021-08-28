@@ -1,24 +1,24 @@
 <form class="example-form" [formGroup]="form" (ngSubmit)="onSubmit()">
     <app-input-component
-        [type]="'email'"
+        [type]="inputType.EMAIL"
         formControlName="emailFormControl"
         [label]="'Email'"
         [placeholder]="'example@ex.com'"
         [isRequired]="true"
-        [parentForm]='form.controls.emailFormControl'
+        [parentFormCtrl]="getFormControl('emailFormControl')"
     ></app-input-component>
     <app-input-component
-        [type]="'password'"
+        [type]="inputType.PASSWORD"
         formControlName="passFormControl"
         [label]="'Password'"
-        [parentForm]='form.controls.passFormControl'
+        [parentFormCtrl]="getFormControl('passFormControl')"
     ></app-input-component>
     <app-input-component
-        [type]="'tel'"
+        [type]="inputType.PHONE"
         formControlName="phoneFormControl"
         [label]="'Phone'"
         [placeholder]="'+123 234 567'"
-        [parentForm]='form.controls.phoneFormControl'
+        [parentFormCtrl]="getFormControl('phoneFormControl')"
     ></app-input-component>
 
     <button mat-raised-button type="submit" [disabled]="!form.valid">
